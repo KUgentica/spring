@@ -33,8 +33,7 @@ public class EventNotificationScheduler {
     /**
      * 매일 오전 9시에 실행됩니다. (cron = "초 분 시 일 월 요일")
      */
-    //@Scheduled(cron = "0 0 9 * * *")
-    @Scheduled(cron = "0 0 23 * * *")
+    @Scheduled(cron = "0 0 9 * * *")
     public void sendDeadlineReminders() {
         logger.info("마감일 알림 스케줄러를 시작합니다...");
 
