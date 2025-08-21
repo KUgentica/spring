@@ -14,11 +14,13 @@ public class FirebaseMessagingService {
   private static final Logger logger =
       LoggerFactory.getLogger(FirebaseMessagingService.class);
 
-  @param
-  token @param title @param body
+  /**
+   * @param token 대상 디바이스 토큰
+   * @param title 알림 제목
+   * @param body  알림 내용
+   */
 
-      public void
-      sendNotification(String token, String title, String body) {
+  public void sendNotification(String token, String title, String body) {
     if (token == null || token.isEmpty()) {
       logger.warn("FCM 토큰이 비어있어 알림을 보낼 수 없습니다.");
       return;

@@ -27,6 +27,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
     pageSerializationMode =
         EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 public class SecurityConfig {
+
   private final CustomUserDetailsService customUserDetailsService;
   private final AuthenticationConfiguration authenticationConfiguration;
   private final RefreshTokenRepository refreshTokenRepository;
@@ -65,34 +66,42 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.csrf((auth) -> auth.disable());
-    http.formLogin((auth) -> auth.disable());
-    http.httpBasic((auth) -> auth.disable());
+    http.csrf(csrf -> csrf.disable());
+    http.formLogin(form -> form.disable());
+    http.httpBasic(basic -> basic.disable());
+
+    // 로그아웃/토큰 무효화 필터
     http.addFilterBefore(new CustomLogoutFilter(jwtTokenProvider,
                                                 refreshTokenRepository,
                                                 fcmTokenRepository),
                          LogoutFilter.class);
-    http.addFilterAfter(
+
+    // JWT 인증 필터는 UsernamePasswordAuthenticationFilter 앞에
+    http.addFilterBefore(
         new JwtAuthenticationFilter(jwtTokenProvider, customUserDetailsService),
         UsernamePasswordAuthenticationFilter.class);
-    http.authorizeHttpRequests(
-        (auth)
-            -> auth.requestMatchers("/login", "/", "/user/register",
-                                    "/user/check-email", "/reissue",
-                                    "/user/profile/**", "/chat/**",
-                                    "/policy/**", "/center")
-                   .permitAll()
-                   .anyRequest()
-                   .authenticated());
 
+    // 로그인 처리용 커스텀 필터 (기본 UsernamePasswordAuthenticationFilter
+    // 위치에)
+    http.addFilterAt(
         new LoginFilter(authenticationManager(authenticationConfiguration),
                         jwtTokenProvider, refreshTokenRepository),
         UsernamePasswordAuthenticationFilter.class);
 
-        http.sessionManagement((session)
-                                   -> session.sessionCreationPolicy(
-                                       (SessionCreationPolicy.STATELESS)));
+    http.authorizeHttpRequests(
+        auth
+        -> auth.requestMatchers("/login", "/", "/user/register",
+                                "/user/check-email", "/reissue",
+                                "/user/profile/**", "/chat/**", "/policy/**",
+                                "/center")
+               .permitAll()
+               .anyRequest()
+               .authenticated());
 
-        return http.build();
+    http.sessionManagement(
+        session
+        -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+    return http.build();
   }
 }
