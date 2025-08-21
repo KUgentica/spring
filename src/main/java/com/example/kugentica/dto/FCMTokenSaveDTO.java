@@ -1,9 +1,7 @@
 package com.example.kugentica.dto;
 
 public class FCMTokenSaveDTO {
-    private String fcmToken;
+  private String fcmToken;
 
-    public String getFcmToken() {
-        return fcmToken;
-    }
+  public String getFcmToken() { return fcmToken; }
 }

@@ -15,26 +15,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/notification")
 
 public class NotificationController {
-    private final NotificationService notificationService;
-    NotificationController(NotificationService notificationService){
-        this.notificationService = notificationService;
+  private final NotificationService notificationService;
+  NotificationController(NotificationService notificationService) {
+    this.notificationService = notificationService;
+  }
+
+  @PostMapping("/fcmToken/save")
+  public ResponseEntity saveFcmToken(@RequestBody FCMTokenSaveDTO request) {
+    Authentication authentication =
+        SecurityContextHolder.getContext().getAuthentication();
+
+    String username = authentication.getName();
+
+    if (username == null || username.equalsIgnoreCase("anonymousUser")) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    @PostMapping("/fcmToken/save")
-    public ResponseEntity saveFcmToken(
-            @RequestBody FCMTokenSaveDTO request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // 2. Authentication 객체에서 사용자 이름(Principal)을 가져옵니다.
-        //    JWT 필터에서 Principal로 이메일(또는 username)을 설정해두었습니다.
-        String username = authentication.getName();
-
-        // [중요] 인증된 사용자가 없는 경우에 대한 예외 처리
-        if (username == null || username.equalsIgnoreCase("anonymousUser")) {
-            // 예외를 던지거나, 적절한 에러 응답을 반환합니다.
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }// 인증된 사용자의 ID를 받습니다.
-
-        return notificationService.saveFcmToken(request,username);
-    }
+    return notificationService.saveFcmToken(request, username);
+  }
 }

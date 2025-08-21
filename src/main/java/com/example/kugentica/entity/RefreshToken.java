@@ -6,17 +6,16 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
-@RedisHash(value = "refreshToken", timeToLive = 86400)  // 24시간(초 단위)
+@RedisHash(value = "refreshToken", timeToLive = 86400)
 @Getter
 @NoArgsConstructor
 public class RefreshToken {
-    @Id
-    private String token;    // Redis key
+  @Id private String token;
 
-    private ObjectId userId;   // FK 역할
+  private ObjectId userId;
 
-    public RefreshToken(String token, ObjectId userId) {
-        this.token    = token;
-        this.userId = userId;
-    }
+  public RefreshToken(String token, ObjectId userId) {
+    this.token = token;
+    this.userId = userId;
+  }
 }

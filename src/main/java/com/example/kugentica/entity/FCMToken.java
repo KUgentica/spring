@@ -16,11 +16,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 public class FCMToken {
 
-    @Id
-    private String id;
-    @Indexed
-    private String userId;
+  @Id private String id;
+  @Indexed private String userId;
 
-    private String fcmToken;
-
+  private String fcmToken;
 }
