@@ -15,5 +15,11 @@ public interface CalendarEventRepository extends MongoRepository<CalendarEvent, 
     // 특정 유저의 특정 정책 관련 이벤트를 삭제합니다.
     void deleteByIdAndUserId(ObjectId policyId, String userId);
     List<CalendarEvent> findByEventDate(LocalDate deadLine);
+    
+    // 특정 유저의 특정 정책 ID로 이벤트가 존재하는지 확인합니다.
+    boolean existsByUserIdAndPolicyId(String userId, ObjectId policyId);
+    
+    // 특정 유저의 특정 정책 ID로 이벤트를 삭제합니다.
+    void deleteByUserIdAndPolicyId(String userId, ObjectId policyId);
 
 }

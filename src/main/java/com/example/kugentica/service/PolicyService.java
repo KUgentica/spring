@@ -20,6 +20,7 @@ public class PolicyService {
     private PolicyCodeRepository policyCodeRepository;
     @Autowired
     private CenterRepository centerRepository;
+
     
     // 카테고리(키워드) 기반 조회 (제목/키워드 OR)
     public List<PolicyCode> getPoliciesByKeyword(String keyword) {
@@ -97,4 +98,6 @@ public class PolicyService {
     
     public List<Center> getCenters() { return centerRepository.findAll(); }
     public List<PolicyCode> getAllPolicies() { return policyCodeRepository.findAll(); }
+    
+
 }

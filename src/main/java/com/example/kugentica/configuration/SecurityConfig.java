@@ -65,7 +65,7 @@ public class SecurityConfig {
         // http basic 인증 비활성화- header에 사용자 이름과 비밀번호를 서버로 보내는 방식 비활성화
         http.httpBasic((auth)->auth.disable());
         http.addFilterBefore(new CustomLogoutFilter(jwtTokenProvider, refreshTokenRepository, fcmTokenRepository), LogoutFilter.class);
-        http.addFilterAt(new JwtAuthenticationFilter(jwtTokenProvider,customUserDetailsService),LoginFilter.class);
+        http.addFilterAfter(new JwtAuthenticationFilter(jwtTokenProvider,customUserDetailsService), UsernamePasswordAuthenticationFilter.class);
         // 경로별 인가 작업 설정
         http.authorizeHttpRequests((auth)-> auth
                 .requestMatchers("/login","/","/user/register","/user/check-email","/reissue","/user/profile/**","/chat/**", "/policy/**","/center").permitAll() // 누구나 접근가능
