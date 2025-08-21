@@ -56,13 +56,41 @@ public class StarService {
      */
     @Transactional
     public void deleteStar(ObjectId itemId, String username) {
+        System.out.println("--- 🗑️ 즐겨찾기 삭제 시작 ---");
+        System.out.println("1. 삭제 대상 itemId: " + itemId);
+        System.out.println("2. 사용자: " + username);
+        
         if (bookmarkRepository.existsByUserIdAndItemId(username, itemId)) {
+            System.out.println("3. 즐겨찾기 존재 확인됨");
+            
+            // 즐겨찾기 삭제
             bookmarkRepository.deleteByUserIdAndItemId(username, itemId);
+            System.out.println("4. 즐겨찾기 삭제 완료");
+            
             // 캘린더 이벤트도 itemId 기준으로 삭제
-            calendarEventRepository.deleteByUserIdAndPolicyId(username, itemId);
+            System.out.println("5. 캘린더 이벤트 삭제 시작");
+            System.out.println("   - 삭제할 사용자: " + username);
+            System.out.println("   - 삭제할 정책 ID: " + itemId);
+            
+            try {
+                calendarEventRepository.deleteByUserIdAndPolicyId(username, itemId);
+                System.out.println("6. 캘린더 이벤트 삭제 완료");
+                
+                // 삭제 후 확인
+                boolean stillExists = calendarEventRepository.existsByUserIdAndPolicyId(username, itemId);
+                System.out.println("7. 삭제 후 캘린더 이벤트 존재 여부: " + stillExists);
+                
+            } catch (Exception e) {
+                System.err.println("❌ 캘린더 이벤트 삭제 중 오류 발생: " + e.getMessage());
+                e.printStackTrace();
+            }
+            
         } else {
+            System.out.println("❌ 삭제할 즐겨찾기를 찾을 수 없음");
             throw new RuntimeException("삭제할 즐겨찾기를 찾을 수 없습니다.");
         }
+        
+        System.out.println("--- ✅ 즐겨찾기 삭제 종료 ---");
     }
 
     /**
